@@ -112,47 +112,91 @@
     items.forEach(function (el) { io.observe(el); });
   }
 
-  /* 5. Gallery filters + lightbox ------------------------------------------------ */
+  /* 5. Gallery groups + sticky nav + lightbox ------------------------------------ */
   function initGallery() {
     var gallery = document.querySelector("[data-gallery]");
     if (!gallery) return;
 
-    // Render from js/gallery-data.js
     var base = gallery.getAttribute("data-image-base") || "../images/";
     var photos = window.GALLERY_PHOTOS || [];
+
+    // Category display order + human labels. A photo is placed in the LAST
+    // category it lists (its most specific one), so it appears in exactly one group.
+    var ORDER = ["kitchens", "bathrooms", "wood-mode", "before-after"];
+    var LABELS = { kitchens: "Kitchens", bathrooms: "Bathrooms", "wood-mode": "Wood-Mode", "before-after": "Before & After" };
+
+    // Bucket photos by primary category
+    var buckets = {};
     photos.forEach(function (ph) {
-      var fig = document.createElement("figure");
-      fig.className = "gallery__item" + (ph.wide ? " gallery__item--wide" : "");
-      fig.setAttribute("data-category", (ph.categories || []).join(" "));
-      var sizes = ph.wide ? "(min-width: 900px) 66vw, 100vw" : "(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw";
-      fig.innerHTML =
-        '<button type="button" data-full="' + base + ph.src + '.jpg" aria-label="Open larger image">' +
-        '<img src="' + base + ph.src + '-800.jpg" srcset="' + base + ph.src + '-800.jpg 800w, ' + base + ph.src + '.jpg 1600w" sizes="' + sizes + '" width="800" height="600" loading="lazy" decoding="async"></button>' +
-        '<figcaption></figcaption>';
-      fig.querySelector("img").alt = ph.alt || "";
-      fig.querySelector("figcaption").textContent = ph.caption || "";
-      gallery.appendChild(fig);
+      var cats = ph.categories || [];
+      var key = cats.length ? cats[cats.length - 1] : "kitchens";
+      (buckets[key] = buckets[key] || []).push(ph);
+    });
+
+    // Build the ordered list of non-empty groups (known order first, then any extras)
+    var keys = ORDER.filter(function (k) { return buckets[k] && buckets[k].length; });
+    Object.keys(buckets).forEach(function (k) { if (keys.indexOf(k) === -1) keys.push(k); });
+
+    var nav = document.querySelector("[data-gallery-nav]");
+
+    keys.forEach(function (key) {
+      var id = "g-" + key;
+      var label = LABELS[key] || key;
+
+      // Sticky nav link
+      if (nav) {
+        var link = document.createElement("a");
+        link.className = "gallery-nav__link";
+        link.href = "#" + id;
+        link.textContent = label;
+        link.setAttribute("data-nav-for", id);
+        nav.appendChild(link);
+      }
+
+      // Group section with a sticky title
+      var group = document.createElement("section");
+      group.className = "gallery-group";
+      group.id = id;
+      group.setAttribute("aria-labelledby", "gh-" + key);
+
+      var title = document.createElement("h2");
+      title.className = "gallery-group__title";
+      title.id = "gh-" + key;
+      title.textContent = label;
+      group.appendChild(title);
+
+      var grid = document.createElement("div");
+      grid.className = "gallery";
+      buckets[key].forEach(function (ph) {
+        var fig = document.createElement("figure");
+        fig.className = "gallery__item" + (ph.wide ? " gallery__item--wide" : "");
+        var sizes = ph.wide ? "(min-width: 900px) 66vw, 100vw" : "(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw";
+        fig.innerHTML =
+          '<button type="button" data-full="' + base + ph.src + '.jpg" aria-label="Open larger image">' +
+          '<img src="' + base + ph.src + '-800.jpg" srcset="' + base + ph.src + '-800.jpg 800w, ' + base + ph.src + '.jpg 1600w" sizes="' + sizes + '" width="800" height="600" loading="lazy" decoding="async"></button>';
+        fig.querySelector("img").alt = ph.alt || "";
+        grid.appendChild(fig);
+      });
+      group.appendChild(grid);
+      gallery.appendChild(group);
     });
 
     var items = Array.prototype.slice.call(gallery.querySelectorAll(".gallery__item"));
-    var filters = document.querySelectorAll("[data-filter]");
-    var empty = document.querySelector("[data-gallery-empty]");
 
-    // Filtering
-    filters.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var value = btn.getAttribute("data-filter");
-        filters.forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
-        var shown = 0;
-        items.forEach(function (item) {
-          var cats = (item.getAttribute("data-category") || "").split(" ");
-          var match = value === "all" || cats.indexOf(value) !== -1;
-          item.classList.toggle("is-hidden", !match);
-          if (match) shown++;
+    // Scroll-spy: mark the nav link for the group currently in view
+    var navLinks = nav ? Array.prototype.slice.call(nav.querySelectorAll(".gallery-nav__link")) : [];
+    if (navLinks.length && "IntersectionObserver" in window) {
+      var setActive = function (id) {
+        navLinks.forEach(function (l) {
+          l.classList.toggle("is-active", l.getAttribute("data-nav-for") === id);
         });
-        if (empty) empty.hidden = shown > 0;
-      });
-    });
+      };
+      setActive(keys[0] ? "g-" + keys[0] : null);
+      var spy = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) setActive(e.target.id); });
+      }, { rootMargin: "-30% 0px -60% 0px", threshold: 0 });
+      gallery.querySelectorAll(".gallery-group").forEach(function (g) { spy.observe(g); });
+    }
 
     // Lightbox
     var lightbox = document.getElementById("lightbox");
