@@ -1270,7 +1270,7 @@ a:hover { color: var(--color-primary-deep); }
     position: relative;
     inset: auto;
     z-index: 0;
-    height: 300px;
+    height: 250px;
   }
   .hero__media video, .hero__media img { height: 100%; }
   .hero__scrim { display: none; }
