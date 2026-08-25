@@ -35,13 +35,21 @@ window.GALLERY_PHOTOS = [
     alt: "Cream kitchen display with cabinet door sample wall, Hamilton Kitchens showroom, Hamilton NJ",
     caption: "Door sample wall — showroom display" },
 
-  /* PLACEHOLDERS — replace with real project photos. Caption template: "[Project Name — Town, NJ] One or two sentences: style, key features, materials." */
-  { src: "gallery/placeholder-bathroom-remodel-hamilton-nj", categories: ["bathrooms"],
-    alt: "[Bathroom remodel placeholder — describe style, features and town, e.g. Walk-in shower with frameless glass and double vanity, Hamilton NJ]",
-    caption: "[Project Name — Town, NJ] [Style, key features, notable materials.]" },
-  { src: "gallery/placeholder-bathroom-remodel-robbinsville-nj", categories: ["bathrooms"],
-    alt: "[Bathroom remodel placeholder — describe style, features and town]",
-    caption: "[Project Name — Town, NJ] [Style, key features, notable materials.]" },
+  /* Bathroom remodels (client photos) */
+  { src: "gallery/bathroom-white-subway-walk-in-shower", categories: ["bathrooms"],
+    alt: "Walk-in shower with white subway tile and frameless glass beside a floating vanity with black fixtures, bathroom remodel by Hamilton Kitchens" },
+  { src: "gallery/bathroom-walk-in-shower-marble-vanity", categories: ["bathrooms"],
+    alt: "White subway-tile walk-in shower with a gray vanity, marble-look countertop, and arched mirror, bathroom remodel by Hamilton Kitchens" },
+  { src: "gallery/bathroom-freestanding-tub-modern", categories: ["bathrooms"],
+    alt: "Modern bathroom with a freestanding soaking tub, dark stone tile, and twin wall-mounted sinks, bathroom remodel by Hamilton Kitchens" },
+  { src: "gallery/bathroom-soaking-tub-floating-vanity", categories: ["bathrooms"],
+    alt: "Luxury bathroom with a freestanding soaking tub and a floating stone vanity in warm neutral tones, bathroom remodel by Hamilton Kitchens" },
+  { src: "gallery/bathroom-freestanding-tub-spa", categories: ["bathrooms"],
+    alt: "Spa-style bathroom with a freestanding tub, wood paneling, and a slatted screen with greenery, bathroom remodel by Hamilton Kitchens" },
+  { src: "gallery/bathroom-corner-glass-shower", categories: ["bathrooms"],
+    alt: "Bathroom with a curved corner glass shower, wall-mounted basin, and heated towel rail, bathroom remodel by Hamilton Kitchens" },
+
+  /* PLACEHOLDERS — replace with real project photos. */
   { src: "gallery/placeholder-wood-mode-kitchen-princeton-nj", categories: ["kitchens", "wood-mode"],
     alt: "[Wood-Mode kitchen placeholder — describe style, features and town]",
     caption: "[Project Name — Town, NJ] [Wood-Mode cabinetry, countertops, island, hood.]" },
