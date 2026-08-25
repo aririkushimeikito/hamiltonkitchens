@@ -1254,3 +1254,37 @@ a:hover { color: var(--color-primary-deep); }
 @media (prefers-reduced-motion: reduce) {
   .gallery-nav, .gallery-group__title { position: static; }
 }
+
+/* ==========================================================================
+   18. Mobile hero — stack video above text (no overlap)
+   Video is a 300px block on top; the hero text sits below it.
+   ========================================================================== */
+@media (max-width: 767px) {
+  .hero {
+    display: block;
+    min-height: 0;
+    background: var(--color-background);
+    isolation: auto;
+  }
+  .hero__media {
+    position: relative;
+    inset: auto;
+    z-index: 0;
+    height: 300px;
+  }
+  .hero__media video, .hero__media img { height: 100%; }
+  .hero__scrim { display: none; }
+  .hero .container { width: 100%; }
+  .hero__plaque {
+    position: relative;
+    width: auto;
+    margin: 0;
+    padding: var(--space-6) var(--gutter) var(--space-7);
+    background: var(--color-background);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .hero__plaque h1 { color: var(--color-primary-deep); }
+  .hero__plaque p { color: var(--color-muted); max-width: none; }
+}
